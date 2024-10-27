@@ -1,4 +1,4 @@
-package com.infinity.apps.magnisetesttask.domain.local.repository
+package com.infinity.apps.magnisetesttask.data.local.repository
 
 import com.infinity.apps.magnisetesttask.domain.model.instrument.InstrumentData
 

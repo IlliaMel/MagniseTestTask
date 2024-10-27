@@ -1,4 +1,4 @@
-package com.infinity.apps.magnisetesttask.domain.remote.repository
+package com.infinity.apps.magnisetesttask.data.remote.repository
 
 import com.infinity.apps.magnisetesttask.domain.model.instrument.HistoricalPrice
 import com.infinity.apps.magnisetesttask.domain.model.instrument.InstrumentData

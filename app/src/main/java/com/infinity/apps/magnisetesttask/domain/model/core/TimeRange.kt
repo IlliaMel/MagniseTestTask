@@ -1,4 +1,4 @@
-package com.infinity.apps.magnisetesttask.domain.model
+package com.infinity.apps.magnisetesttask.domain.model.core
 
 
 import java.util.concurrent.TimeUnit

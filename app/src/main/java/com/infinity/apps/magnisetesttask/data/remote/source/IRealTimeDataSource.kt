@@ -1,4 +1,4 @@
-package com.infinity.apps.magnisetesttask.domain.remote.source
+package com.infinity.apps.magnisetesttask.data.remote.source
 
 import com.infinity.apps.magnisetesttask.domain.model.instrument.MarketPrice
 import kotlinx.coroutines.flow.Flow

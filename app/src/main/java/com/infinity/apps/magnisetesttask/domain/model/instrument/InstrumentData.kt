@@ -1,4 +1,4 @@
-package com.infinity.apps.magnisetesttask.domain.model
+package com.infinity.apps.magnisetesttask.domain.model.instrument
 
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
