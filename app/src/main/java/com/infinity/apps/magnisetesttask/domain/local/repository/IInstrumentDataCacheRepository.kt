@@ -1,8 +1,8 @@
 package com.infinity.apps.magnisetesttask.domain.local.repository
 
-import com.infinity.apps.magnisetesttask.domain.model.instrument.InstrumentData
+import com.infinity.apps.magnisetesttask.domain.model.instrument.response.InstrumentData
 
-interface InstrumentDataCacheRepository {
+interface IInstrumentDataCacheRepository {
 
     suspend fun getCachedInstrumentData(): List<InstrumentData>
 

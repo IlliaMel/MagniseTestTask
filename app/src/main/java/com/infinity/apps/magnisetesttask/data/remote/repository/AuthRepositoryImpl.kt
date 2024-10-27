@@ -1,5 +1,6 @@
 package com.infinity.apps.magnisetesttask.data.remote.repository
 
+import android.util.Log.e
 import com.infinity.apps.magnisetesttask.data.api.AuthApi
 import com.infinity.apps.magnisetesttask.domain.model.auth.AuthResponse
 import com.infinity.apps.magnisetesttask.domain.model.core.Response
@@ -22,13 +23,11 @@ class AuthRepositoryImpl @Inject constructor(private val authApi : AuthApi) : IA
                 username = username,
                 password = password
             )
-
             Response.Success(response)
         } catch (e: HttpException) {
-            Response.Error(message = e.message())
+            Response.DefaultError(message = "${e.code()}: ${e.message()}")
         } catch (e: IOException) {
-            Response.Error(message = e.message.toString())
+            Response.DefaultError(message = e.message.toString())
         }
     }
-
 }

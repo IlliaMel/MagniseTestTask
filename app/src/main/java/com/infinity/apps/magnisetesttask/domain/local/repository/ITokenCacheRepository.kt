@@ -3,8 +3,8 @@ package com.infinity.apps.magnisetesttask.domain.local.repository
 
 interface ITokenCacheRepository {
 
-    fun getSpecialToken (key : String): String?
+    fun getAccessToken (): String?
 
-    fun saveSpecialToken (key : String, token: String) : String
+    fun saveAccessToken (token: String) : String?
 
 }

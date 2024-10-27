@@ -4,6 +4,6 @@ interface ITimeManager {
 
     fun getLastUpdateTime(key : String): Long
 
-    fun updateLastUpdateTime(key : String, data : String): Long
+    fun updateLastUpdateTime(key : String, data : Long): Long
 
 }

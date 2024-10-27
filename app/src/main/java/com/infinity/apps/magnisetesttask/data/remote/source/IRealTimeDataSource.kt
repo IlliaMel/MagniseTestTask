@@ -1,6 +1,6 @@
 package com.infinity.apps.magnisetesttask.data.remote.source
 
-import com.infinity.apps.magnisetesttask.domain.model.instrument.MarketPrice
+import com.infinity.apps.magnisetesttask.domain.model.instrument.response.MarketPrice
 import kotlinx.coroutines.flow.Flow
 
 interface IRealTimeDataSource {

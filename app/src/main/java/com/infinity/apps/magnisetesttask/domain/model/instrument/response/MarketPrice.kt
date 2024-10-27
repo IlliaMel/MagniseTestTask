@@ -1,4 +1,4 @@
-package com.infinity.apps.magnisetesttask.domain.model.instrument
+package com.infinity.apps.magnisetesttask.domain.model.instrument.response
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

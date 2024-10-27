@@ -1,8 +1,13 @@
-package com.infinity.apps.magnisetesttask.domain.model.instrument
+package com.infinity.apps.magnisetesttask.domain.model.instrument.response
 
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class InstrumentDataResponse(
+    @Json(name = "data") val data: List<InstrumentData>
+)
 
 @Keep
 @JsonClass(generateAdapter = true)

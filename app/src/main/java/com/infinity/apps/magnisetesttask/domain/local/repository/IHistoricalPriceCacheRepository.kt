@@ -1,6 +1,6 @@
 package com.infinity.apps.magnisetesttask.domain.local.repository
 
-import com.infinity.apps.magnisetesttask.domain.model.instrument.HistoricalPrice
+import com.infinity.apps.magnisetesttask.domain.model.instrument.response.HistoricalPrice
 
 interface IHistoricalPriceCacheRepository {
 

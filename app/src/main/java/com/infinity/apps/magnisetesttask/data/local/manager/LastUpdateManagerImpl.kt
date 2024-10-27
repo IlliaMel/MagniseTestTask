@@ -1,7 +1,7 @@
 package com.infinity.apps.magnisetesttask.data.local.manager
 
 import com.infinity.apps.magnisetesttask.domain.local.manager.ITimeManager
-
+/*
 class LastUpdateManagerImpl () : ITimeManager {
 
     override fun getLastUpdateTime(key : String): Long {
@@ -14,4 +14,4 @@ class LastUpdateManagerImpl () : ITimeManager {
         return 0L
     }
 
-}
+}*/
