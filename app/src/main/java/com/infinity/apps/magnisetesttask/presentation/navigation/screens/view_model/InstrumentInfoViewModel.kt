@@ -7,6 +7,7 @@ import com.infinity.apps.magnisetesttask.domain.model.core.Response
 import com.infinity.apps.magnisetesttask.domain.model.instrument.param.HistoricalQueryParams
 import com.infinity.apps.magnisetesttask.domain.remote.repository.IAuthRepository
 import com.infinity.apps.magnisetesttask.domain.remote.source.IHistoricalDataSource
+import com.infinity.apps.magnisetesttask.domain.remote.source.IInstrumentsDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class InstrumentInfoViewModel @Inject constructor(
     private val authRepository : IAuthRepository,
-    private val historicalDataSource : IHistoricalDataSource
+    private val historicalDataSource : IHistoricalDataSource,
+    private val instrumentsDataSource : IInstrumentsDataSource
 ) : ViewModel () {
 
     private suspend fun login() {
@@ -36,7 +38,7 @@ class InstrumentInfoViewModel @Inject constructor(
 
     private suspend fun getHistoryData() {
         val result = historicalDataSource.fetchHistoricalPrices(
-            historicalQueryParams = HistoricalQueryParams (
+            historicalQueryParams = HistoricalQueryParams(
                 provider = "oanda", instrumentId = "ad9e5345-4c3b-41fc-9437-1d253f62db52"
             )
         )
@@ -51,25 +53,24 @@ class InstrumentInfoViewModel @Inject constructor(
         }
     }
 
-    /*private suspend fun getHistoryData() {
-        val result = historicalDataSource.fetchHistoricalPrices(
-            historicalQueryParams = HistoricalQueryParams (
-                provider = "oanda", instrumentId = "ad9e5345-4c3b-41fc-9437-1d253f62db52"
-            )
+    private suspend fun getInstrumentData() {
+        val result = instrumentsDataSource.getAllInstruments(
+            size = 1000
         )
+
         when (result) {
             is Response.Success -> {
-                val historicalData = result.data
+                val instrumentData = result.data
             }
 
             else -> {
 
             }
         }
-    }*/
+    }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) { getHistoryData() }
+        viewModelScope.launch(Dispatchers.IO) { getInstrumentData() }
     }
 
 }

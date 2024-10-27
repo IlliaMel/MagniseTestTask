@@ -5,10 +5,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface IRealTimeDataSource {
 
-    fun connectToSocket()
+    suspend fun connectToSocket(instrumentId : String)
 
-    fun disconnectSocket()
+    suspend fun disconnectSocket()
 
-    fun observePriceUpdates(): Flow<MarketPrice>
+    suspend fun observePriceUpdates(): Flow<MarketPrice>
 
 }
+
+
