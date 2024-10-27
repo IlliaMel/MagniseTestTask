@@ -1,0 +1,77 @@
+# Android-specific files
+.gradle/
+.idea/
+build/
+captures/
+.externalNativeBuild/
+navigation.json
+
+# Local configuration file
+local.properties
+
+# Android Studio specific files
+*.iml
+*.hprof
+.idea/libraries/
+.idea/modules.xml
+.idea/.name
+.idea/workspace.xml
+.idea/codeStyles/
+.idea/gradle.xml
+.idea/caches/
+.idea/assetWizardSettings.xml
+.idea/misc.xml
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/inspectionProfiles/
+
+# Keystore files
+*.jks
+*.keystore
+
+# Gradle files
+.gradle/
+gradle-app.settings
+gradlew
+gradlew.bat
+gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+
+# Logs
+*.log
+
+# Cache files
+.cache/
+
+# Compiled source files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux files
+.Trash-*
+
+# Personal IDE configurations
+.idea/runConfigurations/
+.idea/tasks.xml
+.idea/usage.statistics.xml
