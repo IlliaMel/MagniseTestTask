@@ -1,76 +1,264 @@
 package com.infinity.apps.magnisetesttask.presentation.navigation.screens.view_model
 
+import android.R.attr.data
 import android.R.attr.password
+import android.app.GameState
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infinity.apps.magnisetesttask.data.model.response.HistoricalPriceModel
+import com.infinity.apps.magnisetesttask.data.model.response.InstrumentDataModel
+import com.infinity.apps.magnisetesttask.data.model.response.InstrumentRealTimeDataModel
+import com.infinity.apps.magnisetesttask.domain.local.manager.ITimeManager
+import com.infinity.apps.magnisetesttask.domain.local.repository.IInstrumentDataCacheRepository
+import com.infinity.apps.magnisetesttask.domain.local.repository.ITokenCacheRepository
 import com.infinity.apps.magnisetesttask.domain.model.core.Response
 import com.infinity.apps.magnisetesttask.domain.model.instrument.param.HistoricalQueryParams
+import com.infinity.apps.magnisetesttask.domain.model.instrument.response.InstrumentDataResponse
 import com.infinity.apps.magnisetesttask.domain.remote.repository.IAuthRepository
 import com.infinity.apps.magnisetesttask.domain.remote.source.IHistoricalDataSource
 import com.infinity.apps.magnisetesttask.domain.remote.source.IInstrumentsDataSource
+import com.infinity.apps.magnisetesttask.domain.remote.source.IRealTimeDataSource
+import com.infinity.apps.magnisetesttask.presentation.navigation.screens.view_model.state.InstrumentDataState
+import com.infinity.apps.magnisetesttask.presentation.navigation.screens.view_model.state.InstrumentHistoryState
+import com.infinity.apps.magnisetesttask.presentation.navigation.screens.view_model.state.RealTimeDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.websocket.WebSocketException
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class InstrumentInfoViewModel @Inject constructor(
     private val authRepository : IAuthRepository,
     private val historicalDataSource : IHistoricalDataSource,
-    private val instrumentsDataSource : IInstrumentsDataSource
+    private val instrumentsDataSource : IInstrumentsDataSource,
+    private val realTimeDataSource : IRealTimeDataSource,
+    private val tokenCacheRepository: ITokenCacheRepository,
+    private val instrumentDataCacheRepository : IInstrumentDataCacheRepository,
+    private val timeManager : ITimeManager
 ) : ViewModel () {
 
-    private suspend fun login() {
+    private val _instrumentHistoryState: MutableStateFlow<InstrumentHistoryState> =
+        MutableStateFlow(InstrumentHistoryState())
+    val instrumentHistoryState: StateFlow<InstrumentHistoryState> = _instrumentHistoryState
+
+    private val _instrumentDataState: MutableStateFlow<InstrumentDataState> =
+        MutableStateFlow(InstrumentDataState())
+    val instrumentDataState: StateFlow<InstrumentDataState> = _instrumentDataState
+
+    private val _instrumentRealTimeDataState: MutableStateFlow<RealTimeDataState?> =
+        MutableStateFlow(null)
+    val instrumentRealTimeDataState: StateFlow<RealTimeDataState?> =
+        _instrumentRealTimeDataState
+
+    companion object {
+        private const val CACHE_EXPIRATION_TIME : Long = 24 * 60 * 60 * 1000L // 24 hours in milliseconds
+        private const val RETRIES = 3
+    }
+
+    private suspend fun login(
+        attempt: Int = 0,
+        username: String = "r_test@fintatech.com",
+        password: String = "kisfiz-vUnvy9-sopnyv"
+    ) {
+        if (attempt >= RETRIES) {
+            // Handle error to user
+            return
+        }
+
         val result = authRepository.getAuthResponse(
-            username = "r_test@fintatech.com",
-            password = "kisfiz-vUnvy9-sopnyv"
+            username = username,
+            password = password
         )
+
         when (result) {
             is Response.Success -> {
-                val authData = result.data
+                result.data?.accessToken?.let { token ->
+                    tokenCacheRepository.saveAccessToken(token)
+                    return
+                }
             }
 
             else -> {
-
+                delay(1000L)
+                login(attempt + 1)
             }
         }
     }
 
-    private suspend fun getHistoryData() {
+
+    private suspend fun getHistoryData(
+        provider: String = "oanda",
+        instrumentId: String = "ad9e5345-4c3b-41fc-9437-1d253f62db52",
+        attempt: Int = 0
+    ) {
+        if (attempt >= RETRIES) {
+            // Handle error to user
+            return
+        }
+
         val result = historicalDataSource.fetchHistoricalPrices(
             historicalQueryParams = HistoricalQueryParams(
-                provider = "oanda", instrumentId = "ad9e5345-4c3b-41fc-9437-1d253f62db52"
+                provider = provider, instrumentId = instrumentId
             )
         )
+
         when (result) {
             is Response.Success -> {
-                val historicalData = result.data
+                val historicalData = result.data ?: return
+
+                _instrumentHistoryState.update {
+                    it.copy(
+                        data = HistoricalPriceModel.fromHistoricalPrices(historicalData.getSortedPricesByTimestamp())
+                    )
+                }
+
+                return
+            }
+
+            is Response.UnauthorizedError -> {
+                login() // Rout to login screen | Use refresh token
+                delay(1000L)
+                getHistoryData(provider, instrumentId, attempt + 1)
             }
 
             else -> {
-
+                delay(1000L)
+                getHistoryData(provider, instrumentId, attempt + 1)
             }
         }
     }
 
-    private suspend fun getInstrumentData() {
-        val result = instrumentsDataSource.getAllInstruments(
-            size = 1000
-        )
+
+    private suspend fun getInstrumentData(size: Int = 1000, attempt: Int = 0) {
+        if (attempt >= RETRIES) {
+            // Handle error to user
+            return
+        }
+
+        val lastUpdateTime = timeManager.getLastUpdateTime("instrument_data")
+        val currentTime = System.currentTimeMillis()
+
+        // Check if data is outdated
+        if ((currentTime - lastUpdateTime) < CACHE_EXPIRATION_TIME) {
+            val cachedData = instrumentDataCacheRepository.getCachedInstrumentData()
+            if (cachedData.isNotEmpty()) {
+                _instrumentDataState.update {
+                    it.copy(data = InstrumentDataModel.fromInstrumentDataList(InstrumentDataResponse(cachedData)))
+                }
+                return
+            }
+        }
+
+        val result = instrumentsDataSource.getAllInstruments(size = size)
 
         when (result) {
             is Response.Success -> {
-                val instrumentData = result.data
+                val instrumentData = result.data ?: return
+
+                _instrumentDataState.update {
+                    it.copy(
+                        data = InstrumentDataModel.fromInstrumentDataList(instrumentData)
+                    )
+                }
+
+                return
+            }
+
+            is Response.UnauthorizedError -> {
+                login() // Rout to login screen | Use refresh token
+                delay(1000L)
+                getInstrumentData(size, attempt + 1)
             }
 
             else -> {
+                delay(1000L)
+                getInstrumentData(size, attempt + 1)
+            }
+        }
+    }
 
+    private suspend fun getRealTimeData(
+        instrumentId: String = "ad9e5345-4c3b-41fc-9437-1d253f62db52",
+        attempt: Int = 0
+    ) {
+        if (attempt >= RETRIES) {
+            // Handle error to user
+            return
+        }
+
+        try {
+            realTimeDataSource.connectToSocket(instrumentId = instrumentId)
+
+            realTimeDataSource.observePriceUpdates()
+                .onStart {
+                    Log.d("WebSocket Test", "onStart")
+                }
+                .mapNotNull { marketPrice ->
+                    _instrumentDataState.value.data?.find { it.id == marketPrice.instrumentId }?.symbol?.let { instrumentSymbol ->
+                        InstrumentRealTimeDataModel.fromMarketPrice(
+                            price = marketPrice.last.price,
+                            change = marketPrice.last.change,
+                            instrumentSymbol = instrumentSymbol,
+                            timestamp = marketPrice.last.timestamp
+                        )
+                    }
+                }.mapNotNull {
+                    RealTimeDataState(realTimeData = it)
+                }
+                .onEach {
+                    Log.d("WebSocket Each", "onEach with transformed data: $it")
+                }
+                .catch { t ->
+                    Log.e("WebSocket Test", "Error: $t")
+                }
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), RealTimeDataState())
+                .collect { newState ->
+                    _instrumentRealTimeDataState.update {
+                        newState
+                    }
+                }
+        } catch (e: WebSocketException) {
+            if (e.message?.contains("401") == true)
+                login() // Rout to login screen | Use refresh token
+            delay(1000L)
+            getRealTimeData(instrumentId = instrumentId, attempt + 1)
+        } catch (e: Exception) {
+            val m = e.message
+            delay(1000L)
+            getRealTimeData(instrumentId = instrumentId, attempt + 1)
+        } finally {
+            withContext(NonCancellable) {
+                realTimeDataSource.disconnectSocket()
             }
         }
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) { getInstrumentData() }
+        viewModelScope.launch(Dispatchers.IO) {/* getRealTimeData() */}
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.launch(Dispatchers.IO) {
+            realTimeDataSource.disconnectSocket()
+        }
     }
 
 }

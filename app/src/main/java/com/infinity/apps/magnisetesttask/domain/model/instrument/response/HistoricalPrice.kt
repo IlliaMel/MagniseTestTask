@@ -1,15 +1,28 @@
 package com.infinity.apps.magnisetesttask.domain.model.instrument.response
 
-import androidx.annotation.Keep
+
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-
-@JsonClass(generateAdapter = true)
 data class HistoricalPriceResponse(
     @Json(name = "data") val data: List<HistoricalPrice>
-)
+) {
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+
+    fun getSortedPricesByTimestamp(): List<HistoricalPrice> {
+        return data.sortedBy {
+            try {
+                dateFormat.parse(it.timestamp)
+            } catch (e: Exception) {
+                Date(Long.MIN_VALUE)
+            }
+        }
+    }
+}
+
 
 @JsonClass(generateAdapter = true)
 data class HistoricalPrice(

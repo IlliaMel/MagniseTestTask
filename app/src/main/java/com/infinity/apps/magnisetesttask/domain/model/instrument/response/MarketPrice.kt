@@ -1,21 +1,20 @@
 package com.infinity.apps.magnisetesttask.domain.model.instrument.response
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class MarketPrice(
-    @Json(name = "instrumentId") val instrumentId: String,
-    @Json(name = "quote") val quote: QuoteData,
+    val type: String,
+    val instrumentId: String,
+    val provider: String,
+    val last: PriceData
 )
 
-@JsonClass(generateAdapter = true)
-data class QuoteData(
-    @Json(name = "last") val last: PriceData
-)
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class PriceData(
-    @Json(name = "timestamp") val timestamp: String,
-    @Json(name = "price") val price: Double
+    val timestamp: String,
+    val price: Double,
+    val volume: Int,
+    val change: Double,
+    val changePct: Double
 )

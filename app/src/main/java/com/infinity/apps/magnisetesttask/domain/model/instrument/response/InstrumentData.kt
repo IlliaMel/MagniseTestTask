@@ -19,5 +19,11 @@ data class InstrumentData(
     @Json(name = "description") val description: String,
     @Json(name = "tickSize") val tickSize: Double,
     @Json(name = "currency") val currency: String,
-    @Json(name = "baseCurrency") val baseCurrency: String?
-)
+    @Json(name = "baseCurrency") val baseCurrency: String?,
+    @Json(name = "mappings") val mappings: Map<String, Any?>?,
+) {
+    fun getTopLevelMappingsKeys(): List<String> {
+        return mappings?.keys?.toList() ?: emptyList()
+    }
+}
+
