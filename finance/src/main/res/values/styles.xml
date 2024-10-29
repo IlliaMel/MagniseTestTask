@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style parent="@android:style/Widget.Spinner" name="SpinnerAsEditText">
+        <item name="android:background">@android:drawable/edit_text</item>
+    </style>
+
+    <style name="headerTextStyle">
+        <item name="android:textColor">@color/headerTextColor</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="itemNameTextStyle">
+        <item name="android:textColor">@color/itemTextColor</item>
+    </style>
+
+    <style name="SciChartColorPickerDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorPickerBackground</item>
+    </style>
+
+    <style name="SciChartLogoTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fontFamily">@font/neuropol</item>
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">5</item>
+        <item name="android:shadowDy">5</item>
+        <item name="android:shadowRadius">5</item>
+    </style>
+    <style name="SciChart_SciChartv4DarkStyle" parent="SciChart_BaseStyle">
+
+        <item name="sciChartBackground">@drawable/sci_chart_v4_dark_background</item>
+        <item name="legendBackground">@drawable/sci_chart_v4_dark_legend_background</item>
+
+        <item name="isDarkTheme">true</item>
+
+        <item name="renderableSeriesAreaBorderColor">#3e3e3e</item>
+        <item name="renderableSeriesAreaFillColor">@android:color/transparent</item>
+
+        <item name="defaultTextColor">#EEEEEE</item>
+
+
+        <item name="tickTextColor">#A6A7AC</item>
+
+
+        <item name="majorGridLinesColor">#323539</item>
+        <item name="minorGridLinesColor">#232426</item>
+
+        <item name="majorGridLineColor">#323539</item>
+        <item name="minorGridLineColor">#232426</item>
+        <item name="axisBandsColor">#E1202123</item>
+
+
+        <item name="rolloverLineColor">#7742b649</item>
+        <item name="cursorLineColor">#7742b649</item>
+        <item name="rubberBandStrokeColor">#7742b649</item>
+        <item name="rubberBandFillColor">#3342b649</item>
+        <item name="axisTooltipTextColor">#EEEEEE</item>
+        <item name="axisTooltipBackground">@drawable/sci_chart_v4_dark_label_background</item>
+
+        <item name="labelBackground">@drawable/sci_chart_v4_dark_label_background</item>
+
+
+        <item name="mountainLineColor">#FFC6E6FF</item>
+        <item name="mountainAreaColor">#774083B7</item>
+
+
+        <item name="lineSeriesColor">#FFC6E6FF</item>
+
+
+        <item name="columnLineColor">#FFFFFFFF</item>
+        <item name="columnFillColor">#FFFFFFFF</item>
+
+
+        <item name="candleStickStrokeUpColor">#FF52CC54</item>
+        <item name="candleStickStrokeDownColor">#FFE26565</item>
+        <item name="candleStickFillUpColor">#A052CC54</item>
+        <item name="candleStickFillDownColor">#D0E26565</item>
+
+
+        <item name="bandStrokeUpColor">#FF52CC54</item>
+        <item name="bandStrokeDownColor">#FFE26565</item>
+        <item name="bandFillUpColor">#9052CC54</item>
+        <item name="bandFillDownColor">#A0E26565</item>
+
+
+        <item name="lineAnnotationLineColor">#7742b649</item>
+
+        <item name="textAnnotationTextColor">#EEEEEE</item>
+        <item name="textAnnotationBackgroundColor">#AA42b649</item>
+
+        <item name="defaultAnnotationGripsStrokeColor">#FFEEEEEE</item>
+        <item name="defaultAnnotationGripsBackgroundColor">#33FFFFFF</item>
+    </style>
+
+</resources>
