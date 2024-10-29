@@ -33,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -85,6 +85,18 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    implementation(project(":finance"))
+
+    val sciChartVersion = "4.3.0.4686"
+
+    implementation("com.scichart.library:core:$sciChartVersion@aar")
+    implementation("com.scichart.library:data:$sciChartVersion@aar")
+    implementation("com.scichart.library:drawing:$sciChartVersion@aar")
+    implementation("com.scichart.library:charting3d:$sciChartVersion@aar")
+    implementation("com.scichart.library:charting:$sciChartVersion@aar")
+    implementation("com.scichart.library:extensions:$sciChartVersion@aar")
+    implementation("com.scichart.library:extensions3d:$sciChartVersion@aar")
 
 
 }

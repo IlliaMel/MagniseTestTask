@@ -47,7 +47,7 @@ fun FilteredInstrumentsListComponent (
         ) {
             Box(
                 modifier = Modifier
-                    .height(40.dp).fillMaxWidth(1f)
+                    .height(35.dp).fillMaxWidth(1f)
                     .menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
                 contentAlignment = Alignment.Center
             ) {

@@ -34,7 +34,7 @@ fun InstrumentRealTimeDataCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(190.dp)
             .padding(8.dp)
     ) {
         Column(
@@ -50,7 +50,7 @@ fun InstrumentRealTimeDataCard(
                 filterState.filter?.let {
                     Box(
                         modifier = Modifier
-                            .height(40.dp).background(
+                            .height(35.dp).background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(8.dp)
                             ).fillMaxWidth(1f)

@@ -69,11 +69,75 @@ class InstrumentInfoViewModel @Inject constructor(
 
     companion object {
         private const val CACHE_EXPIRATION_TIME: Long =
-            24 * 60 * 60 * 1000L // 24 hours in milliseconds
+            24 * 60 * 60 * 1000L
         private const val RETRIES = 3
     }
 
     private var sendingJob: Job? = null
+    private var historyFetchingJob: Job? = null
+
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            login()
+            getInstrumentData()
+            connectToSocket ()
+        }
+    }
+
+    fun onChangeFilter(filter: String) {
+        onSubscriptionInterruption()
+        _filterState.update {
+            it.copy(filter)
+        }
+        _instrumentDataState.update {
+            it.copy(currentInstrumentModel = null)
+        }
+    }
+
+    fun onInstrumentChanged(instrumentDataModel: InstrumentDataModel) {
+        onSubscriptionInterruption()
+        _instrumentDataState.update {
+            it.copy(currentInstrumentModel = instrumentDataModel)
+        }
+        historyFetchingJob?.cancel()
+        historyFetchingJob = viewModelScope.launch(Dispatchers.IO) {
+            _filterState.value.filter?.let { filter ->
+                getHistoryData(instrumentId = instrumentDataModel.id, provider = filter)
+            }
+        }
+    }
+
+    fun onSubscribe(isSubscribed: Boolean, instrumentId: String, provider: String) {
+        _instrumentRealTimeDataState.update {
+            it.copy(isSubscribe = isSubscribed, realTimeData = null)
+        }
+        sendingJob?.cancel()
+        sendingJob = viewModelScope.launch(Dispatchers.IO) {
+            realTimeDataSource.sendMassage(subscribe = isSubscribed, instrumentId = instrumentId, provider = provider)
+        }
+    }
+
+    private fun onSubscriptionInterruption() {
+        if (_instrumentRealTimeDataState.value.isSubscribe) {
+            viewModelScope.launch(Dispatchers.IO) {
+                _instrumentDataState.value.currentInstrumentModel?.id?.let { instrumentId ->
+                    _filterState.value.filter?.let { provider ->
+                        realTimeDataSource.sendMassage(
+                            subscribe = false,
+                            instrumentId = instrumentId,
+                            provider = provider
+                        )
+                    }
+                }
+            }
+
+            _instrumentRealTimeDataState.update {
+                it.copy(isSubscribe = false, realTimeData = null)
+            }
+        }
+    }
+
 
     private suspend fun login(
         attempt: Int = 0,
@@ -107,8 +171,8 @@ class InstrumentInfoViewModel @Inject constructor(
 
 
     private suspend fun getHistoryData(
-        provider: String = "oanda",
-        instrumentId: String = "ad9e5345-4c3b-41fc-9437-1d253f62db52",
+        provider: String,
+        instrumentId: String,
         attempt: Int = 0
     ) {
         if (attempt >= RETRIES) {
@@ -260,61 +324,6 @@ class InstrumentInfoViewModel @Inject constructor(
         }
     }
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            login()
-            getInstrumentData()
-            connectToSocket ()
-            getHistoryData()
-        }
-    }
-
-    fun onChangeFilter(filter: String) {
-        onSubscriptionInterruption()
-        _filterState.update {
-            it.copy(filter)
-        }
-        _instrumentDataState.update {
-            it.copy(currentInstrumentModel = null)
-        }
-    }
-
-    fun onInstrumentChanged(instrumentDataModel: InstrumentDataModel) {
-        onSubscriptionInterruption()
-        _instrumentDataState.update {
-            it.copy(currentInstrumentModel = instrumentDataModel)
-        }
-    }
-
-    fun onSubscribe(isSubscribed: Boolean, instrumentId: String, provider: String) {
-        _instrumentRealTimeDataState.update {
-            it.copy(isSubscribe = isSubscribed, realTimeData = null)
-        }
-        sendingJob?.cancel()
-        sendingJob = viewModelScope.launch(Dispatchers.IO) {
-            realTimeDataSource.sendMassage(subscribe = isSubscribed, instrumentId = instrumentId, provider = provider)
-        }
-    }
-
-    private fun onSubscriptionInterruption() {
-        if (_instrumentRealTimeDataState.value.isSubscribe) {
-            viewModelScope.launch(Dispatchers.IO) {
-                _instrumentDataState.value.currentInstrumentModel?.id?.let { instrumentId ->
-                    _filterState.value.filter?.let { provider ->
-                        realTimeDataSource.sendMassage(
-                            subscribe = false,
-                            instrumentId = instrumentId,
-                            provider = provider
-                        )
-                    }
-                }
-            }
-
-            _instrumentRealTimeDataState.update {
-                it.copy(isSubscribe = false, realTimeData = null)
-            }
-        }
-    }
 
     override fun onCleared() {
         super.onCleared()
