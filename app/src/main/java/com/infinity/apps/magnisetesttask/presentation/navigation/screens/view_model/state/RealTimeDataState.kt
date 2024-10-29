@@ -3,5 +3,6 @@ package com.infinity.apps.magnisetesttask.presentation.navigation.screens.view_m
 import com.infinity.apps.magnisetesttask.data.model.response.InstrumentRealTimeDataModel
 
 data class RealTimeDataState (
-    val realTimeData : InstrumentRealTimeDataModel? = null
+    val realTimeData : InstrumentRealTimeDataModel? = null,
+    val isSubscribe : Boolean = false
 )

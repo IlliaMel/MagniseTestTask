@@ -1,6 +1,5 @@
 package com.infinity.apps.magnisetesttask.data.model.response
 
-import com.infinity.apps.magnisetesttask.domain.model.instrument.response.InstrumentData
 import com.infinity.apps.magnisetesttask.domain.model.instrument.response.InstrumentDataResponse
 
 

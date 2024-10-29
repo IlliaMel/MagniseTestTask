@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -41,6 +42,8 @@ android {
     buildFeatures {
         compose = true
     }
+
+
 }
 
 dependencies {
@@ -72,8 +75,6 @@ dependencies {
     implementation(libs.lottie.compose)
     // Security
     implementation (libs.androidx.security.crypto)
-    // Charts
-    implementation (libs.ehsannarmani.compose.charts)
     // Ktor
     implementation (libs.ktor.client.core)
     implementation (libs.ktor.client.cio)
@@ -84,4 +85,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+
 }

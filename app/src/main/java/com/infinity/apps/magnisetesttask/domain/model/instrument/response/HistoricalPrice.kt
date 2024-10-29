@@ -6,13 +6,13 @@ import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+@JsonClass(generateAdapter = true)
 data class HistoricalPriceResponse(
     @Json(name = "data") val data: List<HistoricalPrice>
 ) {
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-
     fun getSortedPricesByTimestamp(): List<HistoricalPrice> {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+
         return data.sortedBy {
             try {
                 dateFormat.parse(it.timestamp)
@@ -22,7 +22,6 @@ data class HistoricalPriceResponse(
         }
     }
 }
-
 
 @JsonClass(generateAdapter = true)
 data class HistoricalPrice(

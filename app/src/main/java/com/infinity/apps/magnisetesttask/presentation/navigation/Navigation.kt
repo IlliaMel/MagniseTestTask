@@ -1,5 +1,6 @@
 package com.infinity.apps.magnisetesttask.presentation.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,10 +15,10 @@ sealed interface NavigationState {
 }
 
 @Composable
-fun Navigation (navController : NavHostController = rememberNavController()) {
+fun Navigation (innerPadding: PaddingValues, navController : NavHostController = rememberNavController()) {
     NavHost(navController = navController, startDestination = NavigationState.InstrumentInfoScreen) {
         composable <NavigationState.InstrumentInfoScreen> {
-            InstrumentInfoScreen ()
+            InstrumentInfoScreen (innerPadding = innerPadding)
         }
     }
 }

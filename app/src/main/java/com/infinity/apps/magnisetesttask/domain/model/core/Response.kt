@@ -1,8 +1,5 @@
 package com.infinity.apps.magnisetesttask.domain.model.core
 
-import android.R.attr.data
-
-
 
 sealed class Response<T>(
     val data: T? = null,

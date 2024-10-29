@@ -2,8 +2,8 @@ package com.infinity.apps.magnisetesttask.data.remote.interceptor
 
 import com.infinity.apps.magnisetesttask.domain.local.repository.ITokenCacheRepository
 import okhttp3.Interceptor
-import retrofit2.Invocation
 import okhttp3.Response
+import retrofit2.Invocation
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(private val tokenCacheRepository: ITokenCacheRepository) : Interceptor {

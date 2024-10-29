@@ -3,7 +3,6 @@ package com.infinity.apps.magnisetesttask.data.remote.source
 import com.infinity.apps.magnisetesttask.data.api.HistoricalApi
 import com.infinity.apps.magnisetesttask.domain.model.core.Response
 import com.infinity.apps.magnisetesttask.domain.model.instrument.param.HistoricalQueryParams
-import com.infinity.apps.magnisetesttask.domain.model.instrument.response.HistoricalPrice
 import com.infinity.apps.magnisetesttask.domain.model.instrument.response.HistoricalPriceResponse
 import com.infinity.apps.magnisetesttask.domain.remote.source.IHistoricalDataSource
 import com.squareup.moshi.Moshi
@@ -34,7 +33,7 @@ class HistoricalDataSourceImpl @Inject constructor(
             } else {
                 Response.DefaultError(message = "${e.code()}: ${e.message()}")
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Response.DefaultError(message = e.message.toString())
         }
     }

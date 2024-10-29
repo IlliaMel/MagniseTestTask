@@ -1,3 +1,7 @@
+rootProject.name = "MagniseTestTask"
+include(":app")
+
+
 pluginManagement {
     repositories {
         google {
@@ -18,7 +22,3 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
-rootProject.name = "MagniseTestTask"
-include(":app")
- 

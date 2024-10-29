@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.infinity.apps.magnisetesttask.presentation.navigation.Navigation
@@ -19,9 +18,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MagniseTestTaskTheme {
-               /* Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                }*/
-                Navigation ()
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Navigation(innerPadding = innerPadding)
+                }
             }
         }
     }

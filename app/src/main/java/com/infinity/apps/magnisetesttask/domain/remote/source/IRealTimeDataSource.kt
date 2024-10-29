@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface IRealTimeDataSource {
 
-    suspend fun connectToSocket(instrumentId : String)
+    suspend fun connectToSocket()
+
+    suspend fun sendMassage(subscribe : Boolean, instrumentId : String, provider : String)
 
     suspend fun disconnectSocket()
 

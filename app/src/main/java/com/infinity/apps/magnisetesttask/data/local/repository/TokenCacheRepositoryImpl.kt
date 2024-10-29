@@ -1,7 +1,5 @@
 package com.infinity.apps.magnisetesttask.data.local.repository
 
-import android.R.attr.defaultValue
-import android.util.Log.e
 import com.infinity.apps.magnisetesttask.domain.local.repository.ISecureCacheRepository
 import com.infinity.apps.magnisetesttask.domain.local.repository.ITokenCacheRepository
 import javax.inject.Inject

@@ -12,18 +12,12 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import javax.inject.Named
 
 
@@ -34,20 +28,15 @@ class RealTimeDataSourceImpl @Inject constructor(
 ) : IRealTimeDataSource {
 
     private var session: WebSocketSession? = null
-    private var instrumentId: String? = null
 
-    override suspend fun connectToSocket(instrumentId: String) {
+    override suspend fun connectToSocket() {
         val token = tokenCacheRepository.getAccessToken()
         require(!token.isNullOrEmpty()) { "Token must not be null or empty" }
-
-        this.instrumentId = instrumentId
-        disconnectSocket()
 
         try {
             session = httpClient.webSocketSession {
                 url("wss://$wssUri?token=$token")
             }
-            sendSubscriptionMessage(subscribe = true)
         } catch (e: WebSocketException) {
             throw (e)
         } catch (e: Exception) {
@@ -56,9 +45,10 @@ class RealTimeDataSourceImpl @Inject constructor(
     }
 
     override suspend fun disconnectSocket() {
-        sendSubscriptionMessage(subscribe = false)
-        session?.close()
-        session = null
+        session?.let {
+            session?.close()
+            session = null
+        }
     }
 
     override suspend fun observePriceUpdates(): Flow<MarketPrice> {
@@ -71,15 +61,14 @@ class RealTimeDataSourceImpl @Inject constructor(
             }
     }
 
-    private suspend fun sendSubscriptionMessage(subscribe: Boolean) {
-        val instrumentId = instrumentId ?: return
+    override suspend fun sendMassage(subscribe : Boolean,instrumentId : String, provider : String) {
         val jsonMessage = Json.encodeToString(
             SubscriptionMessage.serializer(),
             SubscriptionMessage(
                 type = "l1-subscription",
                 id = "1",
                 instrumentId = instrumentId,
-                provider = "simulation",
+                provider = provider,
                 subscribe = subscribe,
                 kinds = listOf("last")
             )

@@ -1,6 +1,5 @@
 package com.infinity.apps.magnisetesttask.data.remote.repository
 
-import android.util.Log.e
 import com.infinity.apps.magnisetesttask.data.api.AuthApi
 import com.infinity.apps.magnisetesttask.domain.model.auth.AuthResponse
 import com.infinity.apps.magnisetesttask.domain.model.core.Response
