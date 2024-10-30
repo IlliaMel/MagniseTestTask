@@ -1,11 +1,13 @@
 package com.infinity.apps.magnisetesttask.domain.model.instrument.response
 
 
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Keep
 @JsonClass(generateAdapter = true)
 data class HistoricalPriceResponse(
     @Json(name = "data") val data: List<HistoricalPrice>
@@ -23,6 +25,7 @@ data class HistoricalPriceResponse(
     }
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 data class HistoricalPrice(
     @Json(name = "t") val timestamp: String,

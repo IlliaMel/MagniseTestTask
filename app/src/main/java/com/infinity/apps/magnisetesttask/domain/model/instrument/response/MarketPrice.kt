@@ -1,7 +1,9 @@
 package com.infinity.apps.magnisetesttask.domain.model.instrument.response
 
+import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 
+@Keep
 @Serializable
 data class MarketPrice(
     val type: String,
@@ -10,6 +12,7 @@ data class MarketPrice(
     val last: PriceData
 )
 
+@Keep
 @Serializable
 data class PriceData(
     val timestamp: String,

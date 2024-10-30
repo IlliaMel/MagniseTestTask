@@ -1,9 +1,10 @@
 package com.infinity.apps.magnisetesttask.domain.model.instrument.param
 
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
+@Keep
 @JsonClass(generateAdapter = true)
 data class HistoricalQueryParams(
     @Json(name = "interval") val interval: String = "1",

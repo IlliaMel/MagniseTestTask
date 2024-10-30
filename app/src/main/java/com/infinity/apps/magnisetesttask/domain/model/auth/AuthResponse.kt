@@ -1,8 +1,10 @@
 package com.infinity.apps.magnisetesttask.domain.model.auth
 
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@Keep
 @JsonClass(generateAdapter = true)
 data class AuthResponse(
     @Json(name = "access_token") val accessToken: String,

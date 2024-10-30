@@ -86,7 +86,7 @@ class InstrumentInfoViewModel @Inject constructor(
     }
 
     fun onChangeFilter(filter: String) {
-        onSubscriptionInterruption()
+        onSubscriptionInterruption(instrumentId = _instrumentDataState.value.currentInstrumentModel?.id)
         _filterState.update {
             it.copy(filter)
         }
@@ -96,7 +96,7 @@ class InstrumentInfoViewModel @Inject constructor(
     }
 
     fun onInstrumentChanged(instrumentDataModel: InstrumentDataModel) {
-        onSubscriptionInterruption()
+        onSubscriptionInterruption(instrumentId = _instrumentDataState.value.currentInstrumentModel?.id)
         _instrumentDataState.update {
             it.copy(currentInstrumentModel = instrumentDataModel)
         }
@@ -118,10 +118,10 @@ class InstrumentInfoViewModel @Inject constructor(
         }
     }
 
-    private fun onSubscriptionInterruption() {
+    private fun onSubscriptionInterruption(instrumentId : String?) {
         if (_instrumentRealTimeDataState.value.isSubscribe) {
             viewModelScope.launch(Dispatchers.IO) {
-                _instrumentDataState.value.currentInstrumentModel?.id?.let { instrumentId ->
+                instrumentId?.let { instrumentId ->
                     _filterState.value.filter?.let { provider ->
                         realTimeDataSource.sendMassage(
                             subscribe = false,
